@@ -1,0 +1,16 @@
+.sheet {
+    width:  33%;
+    aspect-ratio:  1;
+    border: 1px solid black;
+    display: grid;
+    grid-template-columns:  repeat(11, 1fr);
+    grid-template-rows:  repeat(11, 1fr);
+}
+
+.space {
+    border:  1px dashed black;
+}
+
+.space--pending {
+    background-color: blue;
+}

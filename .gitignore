@@ -1,0 +1,6 @@
+# Python stuff
+__pycache__
+
+# Javascript stuff
+node_modules/
+static/
