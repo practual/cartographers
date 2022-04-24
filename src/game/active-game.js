@@ -15,21 +15,17 @@ const SEASON = {
 
 
 function ActiveGame({game}) {
+    const [pendingShape, setPendingShape] = useState(null);
     const [hoverSpace, setHoverSpace] = useState(null);
     const [rotation, setRotation] = useState(0);
     const [mirror, setMirror] = useState(0);
 
-    let pendingShapeOffsets = new CoordinateSet();
-    pendingShapeOffsets.add(new Coordinate(0, 0));
-    pendingShapeOffsets.add(new Coordinate(1, 0));
-    pendingShapeOffsets.add(new Coordinate(2, 0));
-    pendingShapeOffsets.add(new Coordinate(2, 1));
-
-    pendingShapeOffsets = rotateSet(pendingShapeOffsets, mirror ? 4 : 0);
-    pendingShapeOffsets = rotateSet(pendingShapeOffsets, rotation);
-
     let pendingShapeCoords;
-    if (hoverSpace) {
+    if (pendingShape && hoverSpace) {
+        let pendingShapeOffsets = CoordinateSet.fromArray(pendingShape.coords);
+        pendingShapeOffsets = rotateSet(pendingShapeOffsets, mirror ? 4 : 0);
+        pendingShapeOffsets = rotateSet(pendingShapeOffsets, rotation);
+
         pendingShapeCoords = new CoordinateSet();
         for (const coord of pendingShapeOffsets) {
             pendingShapeCoords.add(coord.add(hoverSpace));
@@ -41,12 +37,15 @@ function ActiveGame({game}) {
             <h1>
                 {SEASON[game.season]}
             </h1>
-            <Exploration exploration={game.explorations[game.explorations.length - 1]} />
+            <Exploration
+                exploration={game.explorations[game.explorations.length - 1]}
+                onSelectOption={setPendingShape}
+            />
             <button onClick={() => setRotation((rotation + 3) % 4)}>&lt; Rotate</button>
             <button onClick={() => setRotation((rotation + 1) % 4)}>Rotate &gt;</button>
             <button onClick={() => setMirror(mirror ? 0 : 1)}>Mirror</button>
             <Sheet setHoverSpace={([x, y]) => setHoverSpace(new Coordinate(x, y))}>
-                {pendingShapeCoords && <Shape coords={pendingShapeCoords} />}
+                {pendingShapeCoords && <Shape coords={pendingShapeCoords} terrain={pendingShape.terrain} />}
             </Sheet>
         </>
     );

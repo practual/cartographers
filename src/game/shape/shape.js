@@ -16,7 +16,7 @@ function Shape({coords, terrain, onHover, className}) {
                 className={className}
                 styleName={classNames('shape', terrain ? `terrain--${terrain}` : '')}
                 style={placement}
-                onMouseOver={() => onHover([coord.x, coord.y])}
+                onMouseOver={() => onHover && onHover([coord.x, coord.y])}
             ></div>
         );
     });
