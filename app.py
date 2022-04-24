@@ -1,12 +1,13 @@
 from flask import Flask, jsonify, render_template, request
 from flask_socketio import SocketIO, emit
 
+import serializer
 from cache import cache
 from game import add_player, create_game, toggle_player_ready
 
 
 app = Flask(__name__)
-socketio = SocketIO(app, path='/api/socket.io')
+socketio = SocketIO(app, path='/api/socket.io', json=serializer)
 
 
 @app.route('/<string:game_id>/<string:player_id>')

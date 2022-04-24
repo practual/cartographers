@@ -42,6 +42,13 @@ export class CoordinateSet {
         }
     }
 }
+CoordinateSet.fromArray = function(coords) {
+    const cs = new CoordinateSet();
+    for (const coord of coords) {
+        cs.add(new Coordinate(...coord));
+    }
+    return cs;
+}
 
 
 export function rotateCoord(coord, rotation) {

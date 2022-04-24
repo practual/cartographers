@@ -4,3 +4,7 @@ __pycache__
 # Javascript stuff
 node_modules/
 static/
+
+# Data
+log/
+

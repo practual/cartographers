@@ -1,12 +1,14 @@
 import json
 from pymemcache import Client
 
+from serializer import JsonEncoder
+
 
 class JsonSerializer:
     def serialize(self, key, value):
         if isinstance(value, str):
             return value.encode('utf-8'), 1
-        return json.dumps(value).encode('utf-8'), 2
+        return json.dumps(value, cls=JsonEncoder).encode('utf-8'), 2
 
     def deserialize(self, key, value, flag):
         if flag == 1:

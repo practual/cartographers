@@ -1,3 +1,16 @@
+.shape-grid {
+    display:  grid;
+}
+
 .shape {
-    background-color: blue;
+    background-color: gray;
+    border: 1px solid lightgray;
+}
+
+.terrain--forest {
+    background-color: green;
+}
+
+.terrain--farm {
+    background-color: yellow;
 }

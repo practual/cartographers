@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 
 import {Coordinate, CoordinateSet, rotateSet} from './coords';
-import PendingShape from './shape/pending-shape';
+import Exploration from './exploration/exploration';
+import Shape from './shape/shape';
 import Sheet from './sheet/sheet';
 
 
@@ -13,7 +14,7 @@ const SEASON = {
 };
 
 
-function ActiveGame(props) {
+function ActiveGame({game}) {
     const [hoverSpace, setHoverSpace] = useState(null);
     const [rotation, setRotation] = useState(0);
     const [mirror, setMirror] = useState(0);
@@ -38,13 +39,14 @@ function ActiveGame(props) {
     return (
         <>
             <h1>
-                {SEASON[props.game.season]}
+                {SEASON[game.season]}
             </h1>
+            <Exploration exploration={game.explorations[game.explorations.length - 1]} />
             <button onClick={() => setRotation((rotation + 3) % 4)}>&lt; Rotate</button>
             <button onClick={() => setRotation((rotation + 1) % 4)}>Rotate &gt;</button>
             <button onClick={() => setMirror(mirror ? 0 : 1)}>Mirror</button>
             <Sheet setHoverSpace={([x, y]) => setHoverSpace(new Coordinate(x, y))}>
-                {pendingShapeCoords && <PendingShape coords={pendingShapeCoords} />}
+                {pendingShapeCoords && <Shape coords={pendingShapeCoords} />}
             </Sheet>
         </>
     );

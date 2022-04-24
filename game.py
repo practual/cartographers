@@ -2,18 +2,16 @@ import os
 import random
 from uuid import uuid4
 
-# import actions as act
-# from actions import Action
-# from players import Player
 
-
-NO_HARVEST = 'no_harvest'
-ONE_FOOD = 'one_food'
-FULL_HARVEST = 'full_harvest'
-PLAYERS_CHOICE = 'players_choice'
-
-WORK = 'work'
-HARVEST = 'harvest'
+EXPLORATIONS = [{
+    'name': 'Orchard',
+    'coords': {(0, 0), (1, 0), (2, 0), (2, 1)},
+    'options': [{
+        'terrain': 'forest',
+    }, {
+        'terrain': 'farm',
+    }],
+}]
 
 
 def update_log(game_id, action, data):
@@ -57,6 +55,8 @@ def toggle_player_ready(game, player_id):
 
 def start_game(game):
     game['season'] = 1
+    random.shuffle(EXPLORATIONS)
+    game['explorations'] = [EXPLORATIONS[0]]
     return game
 
 
