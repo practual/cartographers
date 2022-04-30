@@ -4,6 +4,39 @@ from uuid import uuid4
 
 
 EXPLORATIONS = [{
+    'id': 7,
+    'name': 'Great River',
+    'time': 1,
+    'terrain': 'water',
+    'options': [{
+        'coords': {(0, 0), (0, 1), (0, 2)},
+        'coin': True,
+    }, {
+        'coords': {(2, 0), (1, 1), (2, 1), (0, 2), (1, 2)},
+    }],
+}, {
+    'id': 8,
+    'name': 'Farmland',
+    'time': 1,
+    'terrain': 'farm',
+    'options': [{
+        'coords': {(0, 0), (0, 1)},
+        'coin': True,
+    }, {
+        'coords': {(1, 0), (0, 1), (1, 1), (2, 1), (1, 2)},
+    }],
+}, {
+    'id': 9,
+    'name': 'Hamlet',
+    'time': 1,
+    'terrain': 'village',
+    'options': [{
+        'coords': {(0, 0), (0, 1), (1, 1)},
+        'coin': True,
+    }, {
+        'coords': {(0, 0), (1, 0), (2, 0), (0, 1), (1, 1)},
+    }],
+}, {
     'id': 10,
     'name': 'Forgotten Forest',
     'time': 1,
@@ -15,6 +48,26 @@ EXPLORATIONS = [{
         'coords': {(0, 0), (0, 1), (1, 1), (1, 2)},
     }],
 }, {
+    'id': 11,
+    'name': 'Hinterland Stream',
+    'time': 2,
+    'coords': {(0, 0), (1, 0), (2, 0), (0, 1), (0, 2)},
+    'options': [{
+        'terrain': 'farm',
+    }, {
+        'terrain': 'water',
+    }],
+}, {
+    'id': 12,
+    'name': 'Homestead',
+    'time': 2,
+    'coords': {(0, 0), (0, 1), (1, 1), (0, 2)},
+    'options': [{
+        'terrain': 'village',
+    }, {
+        'terrain': 'farm',
+    }],
+}, {
     'id': 13,
     'name': 'Orchard',
     'time': 2,
@@ -23,6 +76,16 @@ EXPLORATIONS = [{
         'terrain': 'forest',
     }, {
         'terrain': 'farm',
+    }],
+}, {
+    'id': 14,
+    'name': 'Treetop Village',
+    'time': 2,
+    'coords': {(2, 0), (3, 0), (0, 1), (1, 1), (2, 1)},
+    'options': [{
+        'terrain': 'forest',
+    }, {
+        'terrain': 'village',
     }],
 }, {
     'id': 15,
@@ -44,6 +107,22 @@ EXPLORATIONS = [{
     }, {
         'terrain': 'water',
     }],
+}, {
+    'id': 17,
+    'name': 'Rift Lands',
+    'time': 0,
+    'coords': {(0, 0)},
+    'options': [{
+        'terrain': 'forest',
+    }, {
+        'terrain': 'village',
+    }, {
+        'terrain': 'farm',    
+    }, {
+        'terrain': 'water',    
+    }, {
+        'terrain': 'monster',
+    }]
 }]
 
 EXPLORATIONS_BY_ID = {exploration['id']: exploration for exploration in EXPLORATIONS}
