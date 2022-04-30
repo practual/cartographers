@@ -3,7 +3,7 @@ from flask_socketio import SocketIO, emit
 
 import serializer
 from cache import cache
-from game import add_player, create_game, toggle_player_ready
+from game import add_player, create_game, place_shape_on_sheet, toggle_player_ready
 
 
 app = Flask(__name__)
@@ -47,14 +47,12 @@ def ready_player(game_id, player_id):
     emit('game_state', game, broadcast=True)
 
 
-@socketio.on('use_action')
-def action(game_id, player_id, action_id, data):
-    game_state, cas = cache.gets(game_id)
-    game = Game.deserialize(game_state, update_log)
-    game.use_action(action_id, data)
-    game_state = game.serialize()
-    cache.cas(game_id, game_state, cas)
-    emit('game_state', game_state, broadcast=True)
+@socketio.on('place_shape')
+def place_shape(game_id, player_id, exploration_option, shape_coords):
+    game, cas = cache.gets(game_id)
+    game = place_shape_on_sheet(game, player_id, exploration_option['terrain'], shape_coords)
+    cache.cas(game_id, game, cas)
+    emit('game_state', game, broadcast=True)
 
 
 if __name__ == '__main__':

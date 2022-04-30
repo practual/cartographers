@@ -15,6 +15,10 @@ export class Coordinate {
     flat() {
         return this.x * 11 + this.y;
     }
+
+    toArray() {
+        return [this.x, this.y];
+    }
 }
 Coordinate.fromFlat = function(flat) {
     const y = flat % 11;
@@ -40,6 +44,10 @@ export class CoordinateSet {
         for (const flatCoord of this.flatSet) {
             yield Coordinate.fromFlat(flatCoord);
         }
+    }
+
+    toArray() {
+        return Array.from(this).map(coord => coord.toArray());
     }
 }
 CoordinateSet.fromArray = function(coords) {

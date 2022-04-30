@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import './sheet.css';
 
 
-function Sheet({setHoverSpace, children}) {
+function Sheet({onHover, onClick, children}) {
     const spaces = [];
     for (let y = 0; y < 11; y++) {
         for (let x = 0; x < 11; x++) {
@@ -16,7 +16,8 @@ function Sheet({setHoverSpace, children}) {
                     key={[x, y]}
                     styleName="space"
                     style={placement}
-                    onMouseOver={() => setHoverSpace([x, y])}
+                    onMouseOver={() => onHover([x, y])}
+                    onClick={() => onClick([x, y])}
                 />
             );
         }
@@ -26,7 +27,8 @@ function Sheet({setHoverSpace, children}) {
         <div styleName="sheet">
             {spaces}
             {React.Children.map(children, child => React.cloneElement(child, {
-                onHover: setHoverSpace,
+                onHover,
+                onClick,
             }))}
         </div>
     );
