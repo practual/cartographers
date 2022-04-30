@@ -52,6 +52,7 @@ function ActiveGame({game}) {
             <button onClick={() => setRotation((rotation + 1) % 4)}>Rotate &gt;</button>
             <button onClick={() => setMirror(mirror ? 0 : 1)}>Mirror</button>
             <Sheet
+                terrain={game.sheets[playerId]}
                 onHover={([x, y]) => setHoverSpace(new Coordinate(x, y))}
                 onClick={onPlacePendingShape}
             >

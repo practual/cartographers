@@ -2,7 +2,7 @@ import React from 'react';
 
 import Shape from './shape';
 
-import './shape.css';
+import './shape-grid.css';
 
 
 function ShapeGrid({coords, expand, terrain, shapeClassName}) {

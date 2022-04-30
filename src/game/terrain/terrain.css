@@ -1,8 +1,4 @@
-.shape-grid {
-    display:  grid;
-}
-
-.shape {
+.terrain {
     background-color: gray;
     border: 1px solid lightgray;
 }
