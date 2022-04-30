@@ -4,7 +4,18 @@ from uuid import uuid4
 
 
 EXPLORATIONS = [{
+    'name': 'Forgotten Forest',
+    'time': 1,
+    'terrain': 'forest',
+    'options': [{
+        'coords': {(0, 0), (1, 1)},
+        'coin': True,
+    }, {
+        'coords': {(0, 0), (0, 1), (1, 1), (1, 2)},
+    }],
+}, {
     'name': 'Orchard',
+    'time': 2,
     'coords': {(0, 0), (1, 0), (2, 0), (2, 1)},
     'options': [{
         'terrain': 'forest',
@@ -12,6 +23,8 @@ EXPLORATIONS = [{
         'terrain': 'farm',
     }],
 }]
+
+MOUNTAIN_COORDS = {(3, 1), (8, 2), (5, 5), (2, 8), (7, 9)}
 
 
 def update_log(game_id, action, data):
@@ -57,7 +70,9 @@ def start_game(game):
     game['season'] = 1
     random.shuffle(EXPLORATIONS)
     game['explorations'] = [EXPLORATIONS[0]]
-    game['sheets'] = {player['id']: [] for player in game['players']}
+    game['sheets'] = {player['id']: [
+        {'coords': coords, 'terrain': 'mountain'} for coords in MOUNTAIN_COORDS
+    ] for player in game['players']}
     return game
 
 

@@ -5,14 +5,17 @@ import './terrain.css';
 
 
 function Terrain({coords, terrain, className, ...props}) {
-    const placement = {
-        gridColumn: `${coords.x + 1} / span 1`,
-        gridRow: `${coords.y + 1} / span 1`,
-    };
+    let placement;
+    if (coords) {
+        placement = {
+            gridColumn: `${coords.x + 1} / span 1`,
+            gridRow: `${coords.y + 1} / span 1`,
+        };
+    }
     return (
         <div
             styleName={classNames('terrain', terrain ? `terrain--${terrain}` : '')}
-            style={placement}
+            style={placement ? placement : undefined}
             className={className}
             {...props}
         ></div>

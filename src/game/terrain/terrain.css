@@ -3,6 +3,10 @@
     border: 1px solid lightgray;
 }
 
+.terrain--mountain {
+    background-color: black;
+}
+
 .terrain--forest {
     background-color: green;
 }
