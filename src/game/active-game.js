@@ -25,6 +25,7 @@ function ActiveGame({game}) {
 
     const onPlacePendingShape = () => {
         socket.emit('place_shape', gameId, playerId, pendingShape, pendingShapeCoords.toArray());
+        setPendingShape(null);
     };
 
     let pendingShapeCoords;

@@ -4,8 +4,7 @@ import {useParams} from 'react-router';
 import socket from './socket';
 
 const Player = props => {
-    const params = useParams();
-    const {gameId, playerId} = params;
+    const {gameId, playerId} = useParams();
 
     const emitPlayerReady = () => {
         socket.emit('ready_player', gameId, playerId);

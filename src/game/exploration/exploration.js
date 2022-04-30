@@ -38,7 +38,7 @@ function Exploration({exploration, onSelectOption}) {
                                 shapeClassName={styles.terrain}
                                 terrain={option.terrain}
                             />
-                        ) : <Terrain key={idx} styleName="terrain" />}
+                        ) : <Terrain key={idx} styleName="terrain" terrain={option.terrain} />}
                     </div>
                 ))}
             </div>

@@ -6,9 +6,7 @@ import socket from './socket';
 import Player from './player';
 
 const ReadyPlayers = props => {
-    const params = useParams();
-    const gameId = params.gameId;
-    const playerId = params.playerId;
+    const {gameId, playerId} = useParams();
     const [name, setName] = useState('');
     const navigate = useNavigate();
 
@@ -34,8 +32,8 @@ const ReadyPlayers = props => {
             <div>
                 <h2>Players</h2>
                 <ul>
-                    {props.players.map(
-                        player => <Player key={player.id} player={player} />
+                    {Object.entries(props.players).map(
+                        ([playerId, player]) => <Player key={playerId} player={player} />
                     )}
                 </ul>
             </div>
@@ -43,10 +41,10 @@ const ReadyPlayers = props => {
     );
 };
 ReadyPlayers.propTypes = {
-    players: PropTypes.array,
+    players: PropTypes.object,
 };
 ReadyPlayers.defaultProps = {
-    players: [],
+    players: {},
 };
 
 export default ReadyPlayers;

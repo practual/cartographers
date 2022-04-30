@@ -3,14 +3,22 @@
     border: 1px solid lightgray;
 }
 
-.terrain--mountain {
-    background-color: black;
-}
-
 .terrain--forest {
     background-color: green;
 }
 
+.terrain--village {
+    background-color: red;
+}
+
 .terrain--farm {
     background-color: yellow;
+}
+
+.terrain--water {
+    background-color: blue;
+}
+
+.terrain--mountain {
+    background-color: black;
 }

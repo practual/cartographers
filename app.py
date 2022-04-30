@@ -33,10 +33,10 @@ def get_game(game_id):
 @socketio.on('add_player')
 def create_player(game_id, name):
     game, cas = cache.gets(game_id)
-    game = add_player(game, name)
+    game, player_id = add_player(game, name)
     cache.cas(game_id, game, cas)
     emit('game_state', game, broadcast=True)
-    return game['players'][-1]['id']
+    return player_id
 
 
 @socketio.on('ready_player')

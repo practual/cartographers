@@ -4,6 +4,7 @@ from uuid import uuid4
 
 
 EXPLORATIONS = [{
+    'id': 10,
     'name': 'Forgotten Forest',
     'time': 1,
     'terrain': 'forest',
@@ -14,6 +15,7 @@ EXPLORATIONS = [{
         'coords': {(0, 0), (0, 1), (1, 1), (1, 2)},
     }],
 }, {
+    'id': 13,
     'name': 'Orchard',
     'time': 2,
     'coords': {(0, 0), (1, 0), (2, 0), (2, 1)},
@@ -22,7 +24,29 @@ EXPLORATIONS = [{
     }, {
         'terrain': 'farm',
     }],
+}, {
+    'id': 15,
+    'name': 'Marshlands',
+    'time': 2,
+    'coords': {(0, 0), (0, 1), (1, 1), (2, 1), (0, 2)},
+    'options': [{
+        'terrain': 'forest',
+    }, {
+        'terrain': 'water',
+    }],
+}, {
+    'id': 16,
+    'name': 'Fishing Village',
+    'time': 2,
+    'coords': {(0, 0), (1, 0), (2, 0), (3, 0)},
+    'options': [{
+        'terrain': 'village',
+    }, {
+        'terrain': 'water',
+    }],
 }]
+
+EXPLORATIONS_BY_ID = {exploration['id']: exploration for exploration in EXPLORATIONS}
 
 MOUNTAIN_COORDS = {(3, 1), (8, 2), (5, 5), (2, 8), (7, 9)}
 
@@ -37,46 +61,58 @@ def create_game():
     game_id = str(uuid4())
     update_log(game_id, 'CREATE', {'game_id': game_id})
     return {
-        'game_id': game_id
+        'game_id': game_id,
+        'players': {},
+        'explorations': [],
     }
 
 
 def add_player(game, name):
     player_id = str(uuid4())
     update_log(game['game_id'], 'ADD PLAYER', {'id': player_id, 'name': name})
-    if 'players' not in game:
-        game['players'] = []
-    game['players'].append({
+    game['players'][player_id] = {
         'id': player_id,
         'name': name,
-    })
-    return game
+        'ready': False,
+        'num_explorations': 0,
+    }
+    return game, player_id
 
 
 def toggle_player_ready(game, player_id):
     update_log(game['game_id'], 'READY PLAYER', {'id': player_id})
-    all_players_ready = True
-    for player in game['players']:
-        if player['id'] == player_id:
-            player['ready'] = not player.get('ready')
-        if not player.get('ready'):
-            all_players_ready = False
-    if all_players_ready:
+    game['players'][player_id]['ready'] = not game['players'][player_id]['ready']
+    if all(player['ready'] for p_id, player in game['players'].items()):
         game = start_game(game)
+    return game
+
+
+def deal_exploration(game):
+    all_exploraton_ids = set(EXPLORATIONS_BY_ID.keys())
+    used_exploration_ids = set(exploration['id'] for exploration in game['explorations'])
+    available_exploration_ids = list(all_exploraton_ids - used_exploration_ids)
+    random.shuffle(available_exploration_ids)
+    next_exploration_id = available_exploration_ids[0]
+    game['explorations'].append(EXPLORATIONS_BY_ID[next_exploration_id])
     return game
 
 
 def start_game(game):
     game['season'] = 1
-    random.shuffle(EXPLORATIONS)
-    game['explorations'] = [EXPLORATIONS[0]]
-    game['sheets'] = {player['id']: [
+    game = deal_exploration(game)
+    game['sheets'] = {player_id: [
         {'coords': coords, 'terrain': 'mountain'} for coords in MOUNTAIN_COORDS
-    ] for player in game['players']}
+    ] for player_id in game['players']}
     return game
 
 
 def place_shape_on_sheet(game, player_id, terrain, coords):
     for coord in coords:
         game['sheets'][player_id].append({'coords': coord, 'terrain': terrain})
+    game['players'][player_id]['num_explorations'] += 1
+    if all(
+        player['num_explorations'] == len(game['explorations'])
+        for player in game['players'].values()
+    ):
+        game = deal_exploration(game)
     return game
