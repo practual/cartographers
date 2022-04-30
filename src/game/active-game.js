@@ -26,6 +26,8 @@ function ActiveGame({game}) {
     const onPlacePendingShape = () => {
         socket.emit('place_shape', gameId, playerId, pendingShape, pendingShapeCoords.toArray());
         setPendingShape(null);
+        setRotation(0);
+        setMirror(0);
     };
 
     let pendingShapeCoords;
