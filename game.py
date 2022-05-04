@@ -172,12 +172,44 @@ def treetower(coords_to_terrain, terrain_to_coords):
     return score
 
 
-def stoneside_forest(sheet):
-    pass
+def _stoneside_forest_find_mountain(coords_to_terrain, coord, checked_coords):
+    found_mountain = False
+    for adjacent in _make_coord_adjacents(coord):
+        if adjacent in checked_coords or adjacent not in coords_to_terrain:
+            continue
+        checked_coords.add(adjacent)
+        if coords_to_terrain[adjacent] == 'mountain':
+            return True
+        if coords_to_terrain[adjacent] == 'forest':
+            found_mountain = (
+                found_mountain or
+                _stoneside_forest_find_mountain(coords_to_terrain, adjacent, checked_coords)
+            )
+    return found_mountain
 
 
-def canal_lake(sheet):
-    pass
+def stoneside_forest(coords_to_terrain, terrain_to_coords):
+    score = 0
+    for mountain_space in terrain_to_coords['mountain']:
+        checked_coords = {mountain_space}
+        if _stoneside_forest_find_mountain(coords_to_terrain, mountain_space, checked_coords):
+            score += 3
+    return score
+
+
+def canal_lake(coords_to_terrain, terrain_to_coords):
+    score = 0
+    for water_space in terrain_to_coords['water']:
+        for adjacent in _make_coord_adjacents(water_space):
+            if coords_to_terrain.get(adjacent) == 'farm':
+                score += 1
+                break
+    for farm_space in terrain_to_coords['farm']:
+        for adjacent in _make_coord_adjacents(farm_space):
+            if coords_to_terrain.get(adjacent) == 'water':
+                score += 1
+                break
+    return score
 
 
 def mages_valley(sheet):
@@ -192,8 +224,27 @@ def shoreside_expanse(sheet):
     pass
 
 
-def wildholds(sheet):
-    pass
+def _wildholds_find_cluster(coords_to_terrain, coord, checked_coords, cluster_coords):
+    for adjacent in _make_coord_adjacents(coord):
+        if adjacent in checked_coords or adjacent not in coords_to_terrain:
+            continue
+        checked_coords.add(adjacent)
+        if coords_to_terrain[adjacent] == 'village':
+            cluster_coords.add(adjacent)
+            _wildholds_find_cluster(coords_to_terrain, adjacent, checked_coords, cluster_coords)
+
+
+def wildholds(coords_to_terrain, terrain_to_coords):
+    score = 0
+    checked_coords = set()
+    for village_space in terrain_to_coords['village']:
+        if village_space in checked_coords:
+            continue
+        village_cluster = {village_space}
+        _wildholds_find_cluster(coords_to_terrain, village_space, checked_coords, village_cluster)
+        if len(village_cluster) >= 6:
+            score += 8
+    return score
 
 
 def great_city(sheet):
@@ -488,8 +539,12 @@ def place_shape_on_sheet(game, player_id, terrain, coords):
             'coins': 0,
             'monsters': 0,
         })
+
     game['season'] += 1
-    game['explorations'] = []
-    game = deal_exploration(game)
+    if game['season'] <= 4:
+        game['explorations'] = []
+        for player_id in game['players']:
+            game['players'][player_id]['num_explorations'] = 0
+        game = deal_exploration(game)
 
     return game

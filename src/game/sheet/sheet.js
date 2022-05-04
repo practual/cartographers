@@ -19,8 +19,8 @@ function Sheet({terrain, onHover, onClick, children}) {
                     key={[x, y]}
                     styleName="space"
                     style={placement}
-                    onMouseOver={() => onHover([x, y])}
-                    onClick={() => onClick([x, y])}
+                    onMouseOver={() => onHover && onHover([x, y])}
+                    onClick={() => onClick && onClick([x, y])}
                 />
             );
         }
@@ -36,8 +36,8 @@ function Sheet({terrain, onHover, onClick, children}) {
                         key={coords.flat()}
                         coords={coords}
                         terrain={terrainConfig.terrain}
-                        onMouseOver={() => onHover(coords.toArray())}
-                        onClick={(() => onClick(coords.toArray()))}
+                        onMouseOver={() => onHover && onHover(coords.toArray())}
+                        onClick={(() => onClick && onClick(coords.toArray()))}
                     />
                 );
             })}

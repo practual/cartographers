@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 
-import ActiveGame from './game/active-game';
-import ReadyPlayers from './ready-players';
-import socket from './socket';
+import ReadyPlayers from '../ready-players';
+import socket from '../socket';
+import ActiveGame from './active-game';
+import Results from './results';
 
 
 export default function Game(props) {
@@ -34,7 +35,9 @@ export default function Game(props) {
 
     if (!gameState.season) {
         return <ReadyPlayers players={gameState.players} />;
-    } else {
+    } else if (gameState.season <= 4) {
         return <ActiveGame game={gameState} />;
+    } else {
+        return <Results game={gameState} />;
     }
 }
