@@ -31,7 +31,15 @@ function Sheet({terrain, onHover, onClick, children}) {
             {spaces}
             {terrain.map(terrainConfig => {
                 const coords = new Coordinate(...terrainConfig.coords);
-                return <Terrain key={coords.flat()} coords={coords} terrain={terrainConfig.terrain} />
+                return (
+                    <Terrain
+                        key={coords.flat()}
+                        coords={coords}
+                        terrain={terrainConfig.terrain}
+                        onMouseOver={() => onHover(coords.toArray())}
+                        onClick={(() => onClick(coords.toArray()))}
+                    />
+                );
             })}
             {React.Children.map(children, child => React.cloneElement(child, {
                 onHover,
