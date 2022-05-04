@@ -44,6 +44,14 @@ function ActiveGame({game}) {
 
     return (
         <>
+            <dl>
+                {game.scoring.map(scoring => (
+                    <React.Fragment key={scoring.id}>
+                        <dt>{scoring.name}</dt>
+                        <dd>{scoring.description}</dd>
+                    </React.Fragment>
+                ))}
+            </dl>
             <h1>
                 {SEASON[game.season]}
             </h1>
@@ -61,6 +69,13 @@ function ActiveGame({game}) {
             >
                 {pendingShapeCoords && <Shape coords={pendingShapeCoords} terrain={pendingShape.terrain} />}
             </Sheet>
+            <div>
+                {game.players[playerId].scores.map((scoreCard, idx) => (
+                    <div key={idx}>
+                        First: {scoreCard.first}, Second: {scoreCard.second}
+                    </div>
+                ))}
+            </div>
         </>
     );
 }
