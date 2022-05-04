@@ -10,7 +10,7 @@ import styles from './exploration.css';
 function Exploration({exploration, onSelectOption}) {
     return (
         <div>
-            <h2>{exploration.name}</h2>
+            <h2>{exploration.name} ({exploration.time})</h2>
             {exploration.terrain && (
                 <Terrain terrain={exploration.terrain} styleName="terrain" />
             )}
@@ -29,6 +29,7 @@ function Exploration({exploration, onSelectOption}) {
                             'coords': option.coords || exploration.coords,
                             'terrain': option.terrain || exploration.terrain,
                         })}
+                        styleName="option"
                     >
                         {option.coords ? (
                             <ShapeGrid

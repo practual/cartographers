@@ -6,3 +6,7 @@
 .options {
     display: flex;
 }
+
+.option {
+    margin: 4px;
+}
