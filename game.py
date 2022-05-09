@@ -152,12 +152,28 @@ def _make_coord_adjacents(coord):
     return adjacents
 
 
-def sentinel_wood(sheet):
-    pass
+def sentinel_wood(coords_to_terrain, terrain_to_coords):
+    score = 0
+    for col in range(11):
+        if coords_to_terrain.get((col, 0)) == 'forest':
+            score += 1
+        if coords_to_terrain.get((col, 10)) == 'forest':
+            score += 1
+    for row in range(11):
+        if coords_to_terrain.get((0, row)) == 'forest':
+            score += 1
+        if coords_to_terrain.get((10, row)) == 'forest':
+            score += 1
+    return score
 
 
-def greenbough(sheet):
-    pass
+def greenbough(coords_to_terrain, terrain_to_coords):
+    rows = set()
+    cols = set()
+    for forest_space in terrain_to_coords['forest']:
+        cols.add(forest_space[0])
+        rows.add(forest_space[1])
+    return len(cols) + len(rows)
 
 
 def treetower(coords_to_terrain, terrain_to_coords):
@@ -212,16 +228,60 @@ def canal_lake(coords_to_terrain, terrain_to_coords):
     return score
 
 
-def mages_valley(sheet):
-    pass
+def mages_valley(coords_to_terrain, terrain_to_coords):
+    score = 0
+    for mountain_space in terrain_to_coords['mountain']:
+        for adjacent in _make_coord_adjacents(mountain_space):
+            if adjacent not in coords_to_terrain:
+                continue
+            if coords_to_terrain[adjacent] == 'water':
+                score += 2
+            elif coords_to_terrain[adjacent] == 'farm':
+                score += 1
+    return score
 
 
-def the_golden_granary(sheet):
-    pass
+def the_golden_granary(coords_to_terrain, terrain_to_coords):
+    # To be implemented as part of ruins
+    return 0
 
 
-def shoreside_expanse(sheet):
-    pass
+def _shoreside_expanse_check_cluster(terrain_type, coords_to_terrain, coord, checked_coords):
+    opposite_terrain = 'water' if terrain_type == 'farm' else 'farm'
+    adjacent_coords = _make_coord_adjacents(coord)
+    if len(adjacent_coords) < 4:
+        # On the edge of the map
+        return False
+    not_touching_opposite = True
+    for adjacent in adjacent_coords:
+        if adjacent in checked_coords or adjacent not in coords_to_terrain:
+            continue
+        checked_coords.add(adjacent)
+        if coords_to_terrain[adjacent] == opposite_terrain:
+            return False
+        if coords_to_terrain[adjacent] == terrain_type:
+            not_touching_opposite = (
+                not_touching_opposite and
+                _shoreside_expanse_check_cluster(terrain_type, coords_to_terrain, adjacent, checked_coords)
+            )
+    return not_touching_opposite
+
+
+def shoreside_expanse(coords_to_terrain, terrain_to_coords):
+    score = 0
+    checked_coords = set()
+    for water_space in terrain_to_coords['water']:
+        if water_space in checked_coords:
+            continue
+        if _shoreside_expanse_check_cluster('water', coords_to_terrain, water_space, checked_coords):
+            score += 3
+    checked_coords = set()
+    for farm_space in terrain_to_coords['farm']:
+        if farm_space in checked_coords:
+            continue
+        if _shoreside_expanse_check_cluster('farm', coords_to_terrain, farm_space, checked_coords):
+            score += 3
+    return score
 
 
 def _wildholds_find_cluster(coords_to_terrain, coord, checked_coords, cluster_coords):
@@ -247,8 +307,33 @@ def wildholds(coords_to_terrain, terrain_to_coords):
     return score
 
 
-def great_city(sheet):
-    pass
+def _great_city_check_mountains(coords_to_terrain, coord, checked_coords, village_spaces):
+    not_touching_mountain = True
+    for adjacent in _make_coord_adjacents(coord):
+        if adjacent in checked_coords or adjacent not in coords_to_terrain:
+            continue
+        checked_coords.add(adjacent)
+        if coords_to_terrain[adjacent] == 'mountain':
+            return False
+        elif coords_to_terrain[adjacent] == 'village':
+            village_spaces.add(adjacent)
+            not_touching_mountain = (
+                not_touching_mountain and
+                _great_city_check_mountains(coords_to_terrain, adjacent, checked_coords)
+            )
+    return not_touching_mountain
+
+
+def great_city(coords_to_terrain, terrain_to_coords):
+    village_sizes = []
+    checked_coords = set()
+    for village_space in terrain_to_coords['village']:
+        if village_space in checked_coords:
+            continue
+        village_spaces = {village_space}
+        if _great_city_check_mountains(coords_to_terrain, village_space, checked_coords, village_spaces):
+            village_sizes.append(len(village_spaces))
+    return max(village_spaces)
 
 
 def _greengold_plains_count_adjacent(coords_to_terrain, coord, checked_coords, terrain_found):
@@ -275,8 +360,30 @@ def greengold_plains(coords_to_terrain, terrain_to_coords):
     return score
 
 
-def shieldgate(sheet):
-    pass
+def _shieldgate_count_cluster(coords_to_terrain, coord, checked_coords, cluster_coords):
+    for adjacent in _make_coord_adjacents(coord):
+        if adjacent in checked_coords or adjacent not in coords_to_terrain:
+            continue
+        checked_coords.add(adjacent)
+        if coords_to_terrain[adjacent] == 'village':
+            cluster_coords.add(adjacent)
+            _shieldgate_count_cluster(adjacent)
+
+
+def shieldgate(coords_to_terrain, terrain_to_coords):
+    village_cluster_sizes = []
+    checked_coords = set()
+    for village_space in terrain_to_coords['village']:
+        if village_space in checked_coords:
+            continue
+        cluster_coords = set()
+        _shieldgate_count_cluster(coords_to_terrain, village_space, checked_coords, cluster_coords)
+        village_cluster_sizes.append(len(cluster_coords))
+    village_cluster_sizes = sorted(village_cluster_sizes)
+    try:
+        return 2 * village_cluster_sizes[1]
+    except IndexError:
+        return 0
 
 
 def borderlands(coords_to_terrain, terrain_to_coords):
@@ -293,12 +400,31 @@ def borderlands(coords_to_terrain, terrain_to_coords):
     return score
 
 
-def lost_barony(sheet):
-    pass
+def lost_barony(coords_to_terrain, terrain_to_coords):
+    biggest_squares = {}
+    for y in range(11):
+        for x in range(11):
+            if not x or not y:
+                biggest_squares[(x, y)] = int(bool(coords_to_terrain.get((x, y))))
+            elif not coords_to_terrain.get((x, y)):
+                biggest_squares[(x, y)] = 0
+            else:
+                biggest_squares[(x, y)] = min(
+                    biggest_squares[(x - 1, y)],
+                    biggest_squares[(x, y - 1)],
+                    biggest_squares[(x - 1, y - 1)]
+                ) + 1
+    return max(biggest_squares.values()) * 3
 
 
-def the_broken_road(sheet):
-    pass
+def the_broken_road(coords_to_terrain, terrain_to_coords):
+    score = 0
+    for i in range(11):
+        for j in range(11 - i):
+            if (j, i + j) not in coords_to_terrain:
+                break
+        score += 3
+    return score
 
 
 def the_cauldrons(coords_to_terrain, terrain_to_coords):
@@ -356,12 +482,12 @@ SCORING = {
                 'space. Earn one reputation star for each farm space adjacent to a mountain space.',
             'eval': mages_valley,
         },
-        32: {
-            'name': 'The Golden Granary',
-            'description': 'Earn one reputation star for each water space adjacent to a ruins space. '
-                'Earn three reputation stars for each farm space on a ruins space.',
-            'eval': the_golden_granary,
-        },
+        # 32: {
+        #     'name': 'The Golden Granary',
+        #     'description': 'Earn one reputation star for each water space adjacent to a ruins space. '
+        #         'Earn three reputation stars for each farm space on a ruins space.',
+        #     'eval': the_golden_granary,
+        # },
         33: {
             'name': 'Shoreside Expanse',
             'description': 'Earn three reputation stars for each cluster of farm spaces not adjacent '
