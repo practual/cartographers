@@ -8,3 +8,7 @@
 - Pull the memcached Docker image: `docker pull memcached`
 - Run a container for the memcached image: `docker run -d --rm --net cartographers --name memcached memcached`
 
+## Deploying locally without Docker
+
+- service memcached start
+
