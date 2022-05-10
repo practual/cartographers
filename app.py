@@ -56,4 +56,4 @@ def place_shape(game_id, player_id, exploration_option, shape_coords):
 
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, host='0.0.0.0')
