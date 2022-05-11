@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Shape from './shape';
+import Terrain from '../terrain/terrain';
 
 import './shape-grid.css';
 
@@ -26,7 +26,14 @@ function ShapeGrid({coords, expand, terrain, shapeClassName}) {
             gridTemplateColumns: `repeat(${numCols}, ${itemSize})`,
             gridTemplateRows: `repeat(${numRows}, ${itemSize})`,
         }}>
-            <Shape coords={coords} terrain={terrain} className={shapeClassName} />
+            {Array.from(coords).map(coord => (
+                <Terrain
+                    key={coord.flat()}
+                    coords={coord}
+                    terrain={terrain}
+                    className={shapeClassName}
+                />
+            ))}
         </div>
     );
 }

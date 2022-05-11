@@ -4,8 +4,8 @@ import {useParams} from 'react-router-dom';
 import socket from '../socket';
 import {Coordinate, CoordinateSet, rotateSet} from './coords';
 import Exploration from './exploration/exploration';
-import Shape from './shape/shape';
 import Sheet from './sheet/sheet';
+import Terrain from './terrain/terrain';
 
 
 const SEASON = {
@@ -64,10 +64,16 @@ function ActiveGame({game}) {
             <button onClick={() => setMirror(mirror ? 0 : 1)}>Mirror</button>
             <Sheet
                 terrain={game.sheets[playerId]}
-                onHover={([x, y]) => setHoverSpace(new Coordinate(x, y))}
-                onClick={onPlacePendingShape}
+                onMove={([x, y]) => setHoverSpace(new Coordinate(x, y))}
+                onPlace={onPlacePendingShape}
             >
-                {pendingShapeCoords && <Shape coords={pendingShapeCoords} terrain={pendingShape.terrain} />}
+                {pendingShapeCoords && Array.from(pendingShapeCoords).map(coord => (
+                    <Terrain
+                        key={coord.flat()}
+                        coords={coord}
+                        terrain={pendingShape.terrain}
+                    />
+                ))}
             </Sheet>
             <div>
                 {game.players[playerId].scores.map((scoreCard, idx) => (

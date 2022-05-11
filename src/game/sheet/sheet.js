@@ -6,7 +6,21 @@ import Terrain from '../terrain/terrain';
 import './sheet.css';
 
 
-function Sheet({terrain, onHover, onClick, children}) {
+function getCoordsFromTouchEvent(ev) {
+    const {clientX: touchX, clientY: touchY} = ev.changedTouches[0];
+    const {
+        left: sheetX,
+        top: sheetY,
+        width: sheetWidth,
+        height: sheetHeight
+    } = ev.changedTouches[0].target.getBoundingClientRect();
+    return [
+        Math.floor((touchX - sheetX) / sheetWidth * 11),
+        Math.floor((touchY - sheetY) / sheetHeight * 11),
+    ];
+}
+
+function Sheet({terrain, onMove, onPlace, children}) {
     const spaces = [];
     for (let y = 0; y < 11; y++) {
         for (let x = 0; x < 11; x++) {
@@ -19,8 +33,6 @@ function Sheet({terrain, onHover, onClick, children}) {
                     key={[x, y]}
                     styleName="space"
                     style={placement}
-                    onMouseOver={() => onHover && onHover([x, y])}
-                    onClick={() => onClick && onClick([x, y])}
                 />
             );
         }
@@ -29,7 +41,12 @@ function Sheet({terrain, onHover, onClick, children}) {
     return (
         <div styleName="sheet-outer">
             <div styleName="sheet-wrapper">
-                <div styleName="sheet">
+                <div
+                    onTouchStart={ev => onMove && onMove(getCoordsFromTouchEvent(ev))}
+                    onTouchMove={ev => onMove && onMove(getCoordsFromTouchEvent(ev))}
+                    onTouchEnd={ev => onPlace && onPlace(getCoordsFromTouchEvent(ev))}
+                    styleName="sheet"
+                >
                     {spaces}
                     {terrain.map(terrainConfig => {
                         const coords = new Coordinate(...terrainConfig.coords);
@@ -38,15 +55,10 @@ function Sheet({terrain, onHover, onClick, children}) {
                                 key={coords.flat()}
                                 coords={coords}
                                 terrain={terrainConfig.terrain}
-                                onMouseOver={() => onHover && onHover(coords.toArray())}
-                                onClick={(() => onClick && onClick(coords.toArray()))}
                             />
                         );
                     })}
-                    {React.Children.map(children, child => React.cloneElement(child, {
-                        onHover,
-                        onClick,
-                    }))}
+                    {children}
                 </div>
             </div>
         </div>

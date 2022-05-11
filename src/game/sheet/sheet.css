@@ -20,7 +20,8 @@
 }
 
 .space {
-    border:  1px dashed black;
+    border: 1px dashed black;
+    pointer-events: none;
 }
 
 .space--pending {
