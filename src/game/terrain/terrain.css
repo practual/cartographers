@@ -1,6 +1,7 @@
 .terrain {
     background-color: gray;
     border: 1px solid lightgray;
+    pointer-events: none;
 }
 
 .terrain--forest {
