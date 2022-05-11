@@ -20,7 +20,7 @@ function getCoordsFromTouchEvent(ev) {
     ];
 }
 
-function Sheet({terrain, onMove, onPlace, children}) {
+function Sheet({terrain, onMove, children}) {
     const spaces = [];
     for (let y = 0; y < 11; y++) {
         for (let x = 0; x < 11; x++) {
@@ -44,7 +44,6 @@ function Sheet({terrain, onMove, onPlace, children}) {
                 <div
                     onTouchStart={ev => onMove && onMove(getCoordsFromTouchEvent(ev))}
                     onTouchMove={ev => onMove && onMove(getCoordsFromTouchEvent(ev))}
-                    onTouchEnd={ev => onPlace && onPlace(getCoordsFromTouchEvent(ev))}
                     styleName="sheet"
                 >
                     {spaces}

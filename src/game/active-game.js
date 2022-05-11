@@ -62,10 +62,10 @@ function ActiveGame({game}) {
             <button onClick={() => setRotation((rotation + 3) % 4)}>&lt; Rotate</button>
             <button onClick={() => setRotation((rotation + 1) % 4)}>Rotate &gt;</button>
             <button onClick={() => setMirror(mirror ? 0 : 1)}>Mirror</button>
+            {pendingShapeCoords && <button onClick={onPlacePendingShape}>Confirm</button>}
             <Sheet
                 terrain={game.sheets[playerId]}
                 onMove={([x, y]) => setHoverSpace(new Coordinate(x, y))}
-                onPlace={onPlacePendingShape}
             >
                 {pendingShapeCoords && Array.from(pendingShapeCoords).map(coord => (
                     <Terrain
