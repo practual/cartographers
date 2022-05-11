@@ -1,5 +1,6 @@
 .sheet {
-    width:  33%;
+    width:  100%;
+    max-width:  600px;
     aspect-ratio:  1;
     border: 1px solid black;
     display: grid;
