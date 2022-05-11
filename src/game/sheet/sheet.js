@@ -6,19 +6,26 @@ import Terrain from '../terrain/terrain';
 import './sheet.css';
 
 
-function getCoordsFromTouchEvent(ev) {
-    const {clientX: touchX, clientY: touchY} = ev.changedTouches[0];
+function getCoordsFromEvent(ev) {
+    let eventDetails;
+    if (ev.changedTouches) {
+        eventDetails = ev.changedTouches[0];
+    } else {
+        eventDetails = ev;
+    }
+    const {clientX: targetX, clientY: targetY, target} = eventDetails;
     const {
         left: sheetX,
         top: sheetY,
         width: sheetWidth,
-        height: sheetHeight
-    } = ev.changedTouches[0].target.getBoundingClientRect();
+        height: sheetHeight,
+    } = target.getBoundingClientRect();
     return [
-        Math.floor((touchX - sheetX) / sheetWidth * 11),
-        Math.floor((touchY - sheetY) / sheetHeight * 11),
+        Math.floor((targetX - sheetX) / sheetWidth * 11),
+        Math.floor((targetY - sheetY) / sheetHeight * 11),
     ];
 }
+
 
 function Sheet({terrain, onMove, children}) {
     const spaces = [];
@@ -42,8 +49,9 @@ function Sheet({terrain, onMove, children}) {
         <div styleName="sheet-outer">
             <div styleName="sheet-wrapper">
                 <div
-                    onTouchStart={ev => onMove && onMove(getCoordsFromTouchEvent(ev))}
-                    onTouchMove={ev => onMove && onMove(getCoordsFromTouchEvent(ev))}
+                    onClick={ev => onMove && onMove(getCoordsFromEvent(ev))}
+                    onTouchStart={ev => onMove && onMove(getCoordsFromEvent(ev))}
+                    onTouchMove={ev => onMove && onMove(getCoordsFromEvent(ev))}
                     styleName="sheet"
                 >
                     {spaces}
