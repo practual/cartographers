@@ -27,24 +27,28 @@ function Sheet({terrain, onHover, onClick, children}) {
     }
 
     return (
-        <div styleName="sheet">
-            {spaces}
-            {terrain.map(terrainConfig => {
-                const coords = new Coordinate(...terrainConfig.coords);
-                return (
-                    <Terrain
-                        key={coords.flat()}
-                        coords={coords}
-                        terrain={terrainConfig.terrain}
-                        onMouseOver={() => onHover && onHover(coords.toArray())}
-                        onClick={(() => onClick && onClick(coords.toArray()))}
-                    />
-                );
-            })}
-            {React.Children.map(children, child => React.cloneElement(child, {
-                onHover,
-                onClick,
-            }))}
+        <div styleName="sheet-outer">
+            <div styleName="sheet-wrapper">
+                <div styleName="sheet">
+                    {spaces}
+                    {terrain.map(terrainConfig => {
+                        const coords = new Coordinate(...terrainConfig.coords);
+                        return (
+                            <Terrain
+                                key={coords.flat()}
+                                coords={coords}
+                                terrain={terrainConfig.terrain}
+                                onMouseOver={() => onHover && onHover(coords.toArray())}
+                                onClick={(() => onClick && onClick(coords.toArray()))}
+                            />
+                        );
+                    })}
+                    {React.Children.map(children, child => React.cloneElement(child, {
+                        onHover,
+                        onClick,
+                    }))}
+                </div>
+            </div>
         </div>
     );
 }
