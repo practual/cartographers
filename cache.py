@@ -16,4 +16,4 @@ class JsonSerializer:
         return json.loads(value.decode('utf-8'))
 
 
-cache = Client(('localhost', 11211), serde=JsonSerializer())
+cache = Client(('memcached', 11211), serde=JsonSerializer())
