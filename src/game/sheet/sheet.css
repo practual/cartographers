@@ -8,11 +8,17 @@
     position:  relative;
 }
 
-.sheet {
+.sheet-inner {
     position: absolute;
     top: 0;
     width: 100%;
     height: 100%;
+    display: flex;
+}
+
+
+.sheet {
+    flex: 1;
     border: 1px solid black;
     display: grid;
     grid-template-columns:  repeat(11, 1fr);

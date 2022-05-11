@@ -48,24 +48,26 @@ function Sheet({terrain, onMove, children}) {
     return (
         <div styleName="sheet-outer">
             <div styleName="sheet-wrapper">
-                <div
-                    onClick={ev => onMove && onMove(getCoordsFromEvent(ev))}
-                    onTouchStart={ev => onMove && onMove(getCoordsFromEvent(ev))}
-                    onTouchMove={ev => onMove && onMove(getCoordsFromEvent(ev))}
-                    styleName="sheet"
-                >
-                    {spaces}
-                    {terrain.map(terrainConfig => {
-                        const coords = new Coordinate(...terrainConfig.coords);
-                        return (
-                            <Terrain
-                                key={coords.flat()}
-                                coords={coords}
-                                terrain={terrainConfig.terrain}
-                            />
-                        );
-                    })}
-                    {children}
+                <div styleName="sheet-inner">
+                    <div
+                        onClick={ev => onMove && onMove(getCoordsFromEvent(ev))}
+                        onTouchStart={ev => onMove && onMove(getCoordsFromEvent(ev))}
+                        onTouchMove={ev => onMove && onMove(getCoordsFromEvent(ev))}
+                        styleName="sheet"
+                    >
+                        {spaces}
+                        {terrain.map(terrainConfig => {
+                            const coords = new Coordinate(...terrainConfig.coords);
+                            return (
+                                <Terrain
+                                    key={coords.flat()}
+                                    coords={coords}
+                                    terrain={terrainConfig.terrain}
+                                />
+                            );
+                        })}
+                        {children}
+                    </div>
                 </div>
             </div>
         </div>
