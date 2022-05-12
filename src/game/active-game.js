@@ -22,7 +22,14 @@ function ActiveGame({game}) {
         setMirror(0);
     };
 
+    const currentTerrain = game.sheets[playerId];
+    const currentTerrainSet = new CoordinateSet();
+    for (const currentTerrainSquare of currentTerrain) {
+        currentTerrainSet.add(Coordinate.fromArray(currentTerrainSquare.coords));
+    }
+
     let pendingShapeCoords;
+    let isPendingShapeValid = true;
     if (pendingShape && hoverSpace) {
         let pendingShapeOffsets = CoordinateSet.fromArray(pendingShape.coords);
         pendingShapeOffsets = rotateSet(pendingShapeOffsets, mirror ? 4 : 0);
@@ -30,7 +37,11 @@ function ActiveGame({game}) {
 
         pendingShapeCoords = new CoordinateSet();
         for (const coord of pendingShapeOffsets) {
-            pendingShapeCoords.add(coord.add(hoverSpace));
+            const pendingShapeCoord = coord.add(hoverSpace);
+            pendingShapeCoords.add(pendingShapeCoord);
+            if (currentTerrainSet.has(pendingShapeCoord)) {
+                isPendingShapeValid = false;
+            }
         }
     }
 
@@ -54,9 +65,11 @@ function ActiveGame({game}) {
             <button onClick={() => setRotation((rotation + 3) % 4)}>&lt; Rotate</button>
             <button onClick={() => setRotation((rotation + 1) % 4)}>Rotate &gt;</button>
             <button onClick={() => setMirror(mirror ? 0 : 1)}>Mirror</button>
-            {pendingShapeCoords && <button onClick={onPlacePendingShape}>Confirm</button>}
+            {pendingShapeCoords && (
+                <button onClick={onPlacePendingShape} disabled={!isPendingShapeValid}>Confirm</button>
+            )}
             <Sheet
-                terrain={game.sheets[playerId]}
+                terrain={currentTerrain}
                 onMove={([x, y]) => setHoverSpace(new Coordinate(x, y))}
             >
                 {pendingShapeCoords && Array.from(pendingShapeCoords).map(coord => (

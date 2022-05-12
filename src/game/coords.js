@@ -20,11 +20,14 @@ export class Coordinate {
         return [this.x, this.y];
     }
 }
+Coordinate.fromArray = function(coords) {
+    return new Coordinate(...coords);
+};
 Coordinate.fromFlat = function(flat) {
     const y = flat % 11;
     const x = (flat - y) / 11;
     return new Coordinate(x, y);
-}
+};
 
 
 export class CoordinateSet {
@@ -37,7 +40,7 @@ export class CoordinateSet {
     }
 
     has(coordinate) {
-        this.flatSet.has(coordinate.flat());
+        return this.flatSet.has(coordinate.flat());
     }
 
     *[Symbol.iterator]() {
@@ -56,7 +59,7 @@ CoordinateSet.fromArray = function(coords) {
         cs.add(new Coordinate(...coord));
     }
     return cs;
-}
+};
 
 
 export function rotateCoord(coord, rotation) {
