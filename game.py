@@ -373,7 +373,7 @@ def _shieldgate_count_cluster(coords_to_terrain, coord, checked_coords, cluster_
         checked_coords.add(adjacent)
         if coords_to_terrain[adjacent] == 'village':
             cluster_coords.add(adjacent)
-            _shieldgate_count_cluster(adjacent)
+            _shieldgate_count_cluster(coords_to_terrain, adjacent, checked_coords, cluster_coords)
 
 
 def shieldgate(coords_to_terrain, terrain_to_coords):
