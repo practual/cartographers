@@ -651,7 +651,12 @@ def _get_score_for_card(sheet, scoring_id):
 
 
 def place_shape_on_sheet(game, player_id, terrain, coords):
+    current_coord_set = {
+        tuple(space['coords']) for space in game['sheets'][player_id]
+    }
     for coord in coords:
+        if tuple(coord) in current_coord_set:
+            raise ValueError('Overlapping terrain')
         game['sheets'][player_id].append({'coords': coord, 'terrain': terrain})
     game['players'][player_id]['num_explorations'] += 1
 
