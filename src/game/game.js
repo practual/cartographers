@@ -35,7 +35,7 @@ export default function Game(props) {
 
     if (!gameState.season) {
         return <ReadyPlayers players={gameState.players} />;
-    } else if (gameState.season <= 4) {
+    } else if (gameState.season.id < 4) {
         return <ActiveGame game={gameState} />;
     } else {
         return <Results game={gameState} />;

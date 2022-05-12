@@ -8,14 +8,6 @@ import Sheet from './sheet/sheet';
 import Terrain from './terrain/terrain';
 
 
-const SEASON = {
-    1: 'Spring',
-    2: 'Summer',
-    3: 'Autumn',
-    4: 'Winter',
-};
-
-
 function ActiveGame({game}) {
     const [pendingShape, setPendingShape] = useState(null);
     const [hoverSpace, setHoverSpace] = useState(null);
@@ -53,7 +45,7 @@ function ActiveGame({game}) {
                 ))}
             </dl>
             <h1>
-                {SEASON[game.season]}
+                {game.season.name} ({game.explorations.reduce((acc, el) => acc + el.time, 0)} of {game.season.time})
             </h1>
             <Exploration
                 exploration={game.explorations[game.explorations.length - 1]}

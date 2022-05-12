@@ -3,13 +3,19 @@ import random
 from uuid import uuid4
 
 
-SEASONS = {
-    1: 8,
-    2: 8,
-    3: 7,
-    4: 6,
-}
-
+SEASONS = [{
+    'name': 'Spring',
+    'time': 8,
+}, {
+    'name': 'Summer',
+    'time': 8,
+}, {
+    'name': 'Fall',
+    'time': 7,
+}, {
+    'name': 'Winter',
+    'time': 6,
+}]
 
 EXPLORATIONS = [{
     'id': 7,
@@ -595,6 +601,14 @@ def toggle_player_ready(game, player_id):
     return game
 
 
+def _advance_season(game):
+    current_season_id = game.get('season', {}).get('id', -1)
+    next_season_id = current_season_id + 1
+    game['season'] = SEASONS[next_season_id]
+    game['season']['id'] = next_season_id
+    return game
+
+
 def deal_exploration(game):
     all_exploraton_ids = set(EXPLORATIONS_BY_ID.keys())
     used_exploration_ids = set(exploration['id'] for exploration in game['explorations'])
@@ -606,8 +620,6 @@ def deal_exploration(game):
 
 
 def start_game(game):
-    game['season'] = 1
-
     scoring_types = [0, 1, 2, 3]
     random.shuffle(scoring_types)
     for i in scoring_types:
@@ -619,6 +631,7 @@ def start_game(game):
             'description': SCORING[i][scoring[0]]['description'],
         })
 
+    game = _advance_season(game)
     game = deal_exploration(game)
     game['sheets'] = {player_id: [
         {'coords': coords, 'terrain': 'mountain'} for coords in MOUNTAIN_COORDS
@@ -648,7 +661,7 @@ def place_shape_on_sheet(game, player_id, terrain, coords):
     ):
         return game
 
-    if sum(exploration['time'] for exploration in game['explorations']) < SEASONS[game['season']]:
+    if sum(exploration['time'] for exploration in game['explorations']) < game['season']['time']:
         game = deal_exploration(game)
         return game
 
@@ -656,18 +669,18 @@ def place_shape_on_sheet(game, player_id, terrain, coords):
         game['players'][player_id]['scores'].append({
             'first': _get_score_for_card(
                 game['sheets'][player_id],
-                game['scoring'][game['season'] - 1]['id']
+                game['scoring'][game['season']['id']]['id']
             ),
             'second': _get_score_for_card(
                 game['sheets'][player_id],
-                game['scoring'][game['season'] % 4]['id']
+                game['scoring'][(game['season']['id'] + 1) % 4]['id']
             ),
             'coins': 0,
             'monsters': 0,
         })
 
-    game['season'] += 1
-    if game['season'] <= 4:
+    game = _advance_season(game)
+    if game['season']['id'] < 4:
         game['explorations'] = []
         for player_id in game['players']:
             game['players'][player_id]['num_explorations'] = 0
