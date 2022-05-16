@@ -1,4 +1,7 @@
 import json
+
+from flask import current_app as app
+from flask import g
 from pymemcache import Client
 
 from serializer import JsonEncoder
@@ -16,4 +19,7 @@ class JsonSerializer:
         return json.loads(value.decode('utf-8'))
 
 
-cache = Client(('memcached', 11211), serde=JsonSerializer())
+def get_cache():
+    if 'cache' not in g:
+        g.cache = Client((app.config['MEMCACHE']['HOST'], 11211), serde=JsonSerializer())
+    return g.cache

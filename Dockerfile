@@ -22,5 +22,7 @@ RUN mkdir log
 
 EXPOSE 5000
 
+ENV CART_DEPLOYMENT_MODE docker
+
 CMD [ "python", "./app.py" ]
 
