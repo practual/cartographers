@@ -2,3 +2,19 @@
     box-sizing: border-box;
     margin: 0;
 }
+
+body {
+    padding: 16px;
+}
+
+h1 {
+    margin-bottom: 16px;
+}
+
+h2 {
+    margin-bottom: 8px;
+}
+
+p {
+    margin-bottom: 16px;
+}

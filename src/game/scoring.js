@@ -4,14 +4,13 @@ import React from 'react';
 function Scoring({scoringData, onClose}) {
     return (
         <>
-            <dl>
-                {scoringData.map(scoring => (
-                    <React.Fragment key={scoring.id}>
-                        <dt>{scoring.name}</dt>
-                        <dd>{scoring.description}</dd>
-                    </React.Fragment>
-                ))}
-            </dl>
+            <h1>Scorecards</h1>
+            {scoringData.map(scoring => (
+                <div key={scoring.id}>
+                    <h2>{scoring.name}</h2>
+                    <p>{scoring.description}</p>
+                </div>
+            ))}
             <button onClick={onClose}>Close</button>
         </>
     );
