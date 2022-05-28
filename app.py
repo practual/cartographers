@@ -27,7 +27,7 @@ def index(**kwargs):
 @app.route('/api/game', methods=['POST'])
 def start_game():
     num_players = int(request.args.get('players', 1))
-    game = create_game()
+    game = create_game(num_players)
     get_cache().set(game['game_id'], game)
     return game['game_id'], 201
 

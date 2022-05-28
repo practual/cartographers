@@ -569,11 +569,12 @@ def update_log(game_id, action, data):
         game_log.write(str(data) + '\n')
 
 
-def create_game():
+def create_game(num_players):
     game_id = str(uuid4())
     update_log(game_id, 'CREATE', {'game_id': game_id})
     return {
         'game_id': game_id,
+        'num_players': num_players,
         'players': {},
         'explorations': [],
         'scoring': [],
@@ -596,7 +597,7 @@ def add_player(game, name):
 def toggle_player_ready(game, player_id):
     update_log(game['game_id'], 'READY PLAYER', {'id': player_id})
     game['players'][player_id]['ready'] = not game['players'][player_id]['ready']
-    if all(player['ready'] for p_id, player in game['players'].items()):
+    if len([player for player in game['players'].values() if player['ready']]) == game['num_players']:
         game = start_game(game)
     return game
 
