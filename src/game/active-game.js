@@ -4,11 +4,13 @@ import {useParams} from 'react-router-dom';
 import socket from '../socket';
 import {Coordinate, CoordinateSet, rotateSet} from './coords';
 import Exploration from './exploration/exploration';
+import Scoring from './scoring';
 import Sheet from './sheet/sheet';
 import Terrain from './terrain/terrain';
 
 
 function ActiveGame({game}) {
+    const [isScoringVisible, setScoringVisible] = useState(true);
     const [pendingShape, setPendingShape] = useState(null);
     const [hoverSpace, setHoverSpace] = useState(null);
     const [rotation, setRotation] = useState(0);
@@ -45,19 +47,16 @@ function ActiveGame({game}) {
         }
     }
 
+    if (isScoringVisible) {
+        return <Scoring scoringData={game.scoring} onClose={() => setScoringVisible(false)} />
+    }
+
     return (
         <>
-            <dl>
-                {game.scoring.map(scoring => (
-                    <React.Fragment key={scoring.id}>
-                        <dt>{scoring.name}</dt>
-                        <dd>{scoring.description}</dd>
-                    </React.Fragment>
-                ))}
-            </dl>
             <h1>
                 {game.season.name} ({game.explorations.reduce((acc, el) => acc + el.time, 0)} of {game.season.time})
             </h1>
+            <button onClick={() => setScoringVisible(true)}>View scorecards</button>
             <Exploration
                 exploration={game.explorations[game.explorations.length - 1]}
                 onSelectOption={setPendingShape}
