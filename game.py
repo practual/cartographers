@@ -685,11 +685,14 @@ def place_shape_on_sheet(game, player_id, terrain, coords):
             'monsters': 0,
         })
 
+    if game['season']['id'] == 3:
+        # End of the game
+        return game
+
     game = _advance_season(game)
-    if game['season']['id'] < 4:
-        game['explorations'] = []
-        for player_id in game['players']:
-            game['players'][player_id]['num_explorations'] = 0
-        game = deal_exploration(game)
+    game['explorations'] = []
+    for player_id in game['players']:
+        game['players'][player_id]['num_explorations'] = 0
+    game = deal_exploration(game)
 
     return game
