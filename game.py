@@ -605,8 +605,13 @@ def toggle_player_ready(game, player_id):
 def _advance_season(game):
     current_season_id = game.get('season', {}).get('id', -1)
     next_season_id = current_season_id + 1
-    game['season'] = SEASONS[next_season_id]
-    game['season']['id'] = next_season_id
+    try:
+        game['season'] = SEASONS[next_season_id]
+        game['season']['id'] = next_season_id
+    except IndexError:
+        # End of the game - use a pseudo season to indicate to the client
+        # that the game is over.
+        game['season'] = {'id': next_season_id}
     return game
 
 
@@ -685,14 +690,12 @@ def place_shape_on_sheet(game, player_id, terrain, coords):
             'monsters': 0,
         })
 
-    if game['season']['id'] == 3:
-        # End of the game
-        return game
-
     game = _advance_season(game)
-    game['explorations'] = []
-    for player_id in game['players']:
-        game['players'][player_id]['num_explorations'] = 0
-    game = deal_exploration(game)
+
+    if game['season']['id'] < 4:
+        game['explorations'] = []
+        for player_id in game['players']:
+            game['players'][player_id]['num_explorations'] = 0
+        game = deal_exploration(game)
 
     return game
