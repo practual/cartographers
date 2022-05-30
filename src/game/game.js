@@ -4,12 +4,16 @@ import {useParams} from 'react-router-dom';
 import ReadyPlayers from '../ready-players';
 import socket from '../socket';
 import ActiveGame from './active-game';
+import {INTERSTITIAL_STATE} from './constants';
 import Results from './results';
+import Scoring from './scoring';
+import SeasonStart from './season-start';
 
 
 export default function Game(props) {
     const [isLoading, setIsLoading] = useState(true);
-    const [gameState, setGameState] = useState({});
+    const [game, setGameState] = useState({});
+    const [interstitialState, setInterstitialState] = useState(INTERSTITIAL_STATE.SCORING);
     const params = useParams();
 
     useEffect(() => {
@@ -33,11 +37,15 @@ export default function Game(props) {
         return null;
     }
 
-    if (!gameState.season) {
-        return <ReadyPlayers players={gameState.players} />;
-    } else if (gameState.season.id < 4) {
-        return <ActiveGame game={gameState} />;
+    if (!game.season) {
+        return <ReadyPlayers players={game.players} />;
+    } else if (game.season.id === 4) {
+        return <Results game={game} />;
+    } else if (interstitialState === INTERSTITIAL_STATE.SCORING) {
+        return <Scoring scoringData={game.scoring} onClose={() => setInterstitialState(INTERSTITIAL_STATE.SEASON_START)} />
+    } else if (interstitialState === INTERSTITIAL_STATE.SEASON_START) {
+        return <SeasonStart season={game.season} onEnd={() => setInterstitialState(INTERSTITIAL_STATE.NONE)} />
     } else {
-        return <Results game={gameState} />;
+        return <ActiveGame game={game} />;
     }
 }

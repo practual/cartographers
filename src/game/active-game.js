@@ -10,7 +10,7 @@ import Terrain from './terrain/terrain';
 
 
 function ActiveGame({game}) {
-    const [isScoringVisible, setScoringVisible] = useState(true);
+    const [isScoringVisible, setScoringVisible] = useState(false);
     const [pendingShape, setPendingShape] = useState(null);
     const [hoverSpace, setHoverSpace] = useState(null);
     const [rotation, setRotation] = useState(0);
