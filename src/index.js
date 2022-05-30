@@ -14,7 +14,7 @@ const App = () => {
     const [socketLog, setSocketLog] = useState('');
 
     useEffect(() => {
-        socket.on('connect', () => setSocketLog(socketLog + 'connect\n'));
+        socket.on('connect', () => setSocketLog(socketLog + 'connect ' + socket.io.engine.transport.name + '\n'));
         socket.io.engine.on('upgrade', () => setSocketLog(socketLog + 'upgrade\n'));
         socket.on('connect_error', () => setSocketLog(socketLog + 'connect_error\n'));
         socket.on('disconnect', () => setSocketLog(socketLog + 'disconnect\n'));
