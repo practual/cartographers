@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import * as ReactDOM from 'react-dom/client';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 
@@ -7,10 +7,21 @@ import Home from './home';
 
 import './global.css';
 import styles from './index.css';
+import socket from './socket';
 
 
-const App = () => (
+const App = () => {
+    const [socketLog, setSocketLog] = useState('');
+
+    useEffect(() => {
+        socket.on('connect', () => setSocketLog(socketLog + 'connect\n'));
+        socket.io.engine.on('upgrade', () => setSocketLog(socketLog + 'upgrade\n'));
+        socket.on('connect_error', () => setSocketLog(socketLog + 'connect_error\n'));
+        socket.on('disconnect', () => setSocketLog(socketLog + 'disconnect\n'));
+    });
+    return (
     <div>
+        {socketLog}
         <BrowserRouter>
             <Routes>
                 <Route path=":gameId" element={<Game />} />
@@ -19,6 +30,7 @@ const App = () => (
             </Routes>
         </BrowserRouter>
     </div>
-);
+    );
+}
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
