@@ -11,5 +11,6 @@
 
 ## Deploying locally without Docker
 
+- sudo apt install memcached
 - service memcached start
 
